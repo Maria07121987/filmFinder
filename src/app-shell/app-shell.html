@@ -1,0 +1,108 @@
+<link rel="import" href="../../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../../src/app-shell/input-submit.html">
+<link rel="import" href="../../src/app-shell/film-box.html">
+<link rel="import" href="../../bower_components/iron-ajax/iron-ajax.html">
+
+<dom-module id="app-shell">
+  <template>
+    <style>
+      :host {
+        display: grid;
+          grid-template-columns: 1fr;   
+          grid-template-rows: 80px 1fr;
+          grid-template-areas: 
+            "h"
+            "m";
+        padding: 1rem;
+      }
+
+      header {
+        grid-area: h;
+        display: flex;
+        opacity: 0.6;
+        justify-content: center;
+      }
+
+      main {
+        grid-area: m;
+        display: grid;
+      }
+
+      input-submit {
+        display: flex;
+      }
+
+      .container-films {
+        display: grid;
+        grid-template-columns: 1fr;
+        grid-template-rows: 1fr;
+      }
+
+      @media (min-width: 550px) {
+        .container-films {
+          display: grid;
+          grid-template-columns: repeat(auto-fill, 240px);
+          grid-template-rows: repeat(auto-fill, minMax(391px,1fr));
+          grid-column-gap: 10px;
+          grid-row-gap: 15px;
+          justify-content: center;
+        }
+      }
+    
+    </style>
+    <header>
+        <h1>Find your fucking film!</h1>
+    </header>
+    <main>
+        <iron-ajax></iron-ajax>
+        <section> 
+            <input-submit></input-submit>
+        </section>
+        <section >
+            <film-box class="container-films" films="{{ajaxResponse}}" error="{{responseError}}"></film-box>
+        </section>
+    </main>
+    
+  </template>
+
+  <script>
+    /**
+     * @customElement
+     * @polymer
+     */
+    class AppShell extends Polymer.Element {
+      static get is() { return 'app-shell'; }
+      static get properties() {
+        return {
+          ajaxResponse: {
+            type: Object
+          },
+          responseError:{
+            type:String
+          }
+        };
+      }
+
+      ready(){
+        super.ready();
+        this.addEventListener('filmEvent', function(e){
+          this.filmName = e.detail.filmValue;
+          let ajaxDom = this.shadowRoot.querySelector('iron-ajax');
+          ajaxDom.url = `https://www.omdbapi.com/?s=${this.filmName}&plot=full&apikey=e477ed6a`;
+          ajaxDom.generateRequest().completes
+            .then((res) => {
+              if(res.response.Response == 'True'){
+                this.ajaxResponse = res.response.Search;
+                this.responseError ='';
+              }else {
+                this.ajaxResponse = [];
+                this.responseError = 'No se han encontrado resultados';
+              }
+            });
+        });
+      }
+    }
+
+    window.customElements.define(AppShell.is, AppShell);
+  </script>
+</dom-module>

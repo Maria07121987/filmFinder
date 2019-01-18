@@ -1,0 +1,6 @@
+{
+  "name": "film-finder",
+  "short_name": "film-finder",
+  "start_url": "/",
+  "display": "standalone"
+}

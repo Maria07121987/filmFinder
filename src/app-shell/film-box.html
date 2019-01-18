@@ -1,0 +1,57 @@
+<link rel="import" href="../../bower_components/polymer/polymer-element.html">
+
+<dom-module id="film-box">
+  <template>
+    <style>
+      :host {
+        display: block;
+      }
+
+      img {
+        max-width: 100%;
+        height: auto;
+      }
+
+      .item-film {
+        display: block;
+        padding: 1rem;
+        box-shadow: 1px 2px 4px 2px #B4B4B4;
+      }
+
+    </style>
+    <template is="dom-if" if="{{films.length}}">
+        <template is="dom-repeat" items="{{films}}">
+            <div class="item-film">
+                <p>{{item.Title}}</p>
+                <p>{{item.Year}}</p>
+                <img src="{{item.Poster}}" alt="{{item.Type}}">
+            </div>
+        </template>
+    </template>
+        <template is="dom-if" if="{{!films.length}}">
+            <h2>{{error}}</h2>
+        </template>
+  </template>
+
+  <script>
+    /**
+     * @customElement
+     * @polymer
+     */
+    class FilmBox extends Polymer.Element {
+      static get is() { return 'film-box'; }
+      static get properties() {
+        return {
+          films: {
+            type: Array
+          },
+          error: {
+            type: String
+          }
+        };
+      }
+    }
+
+    window.customElements.define(FilmBox.is, FilmBox);
+  </script>
+</dom-module>

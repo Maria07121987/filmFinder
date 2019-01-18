@@ -1,0 +1,44 @@
+<link rel="import" href="../../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../../bower_components/paper-button/paper-button.html">
+
+<dom-module id="input-submit">
+  <template>
+    <style>
+      :host {
+        display: block;
+        padding: 1rem;
+      }
+
+      paper-input {
+        flex-grow:1;
+      }
+
+    </style>
+    <paper-input label="Introduce a film" value="{{filmValue}}"></paper-input>
+    <paper-button on-click="_click" disabled="{{!filmValue.length}}" raised>Find</paper-button>
+  </template>
+
+  <script>
+    /**
+     * @customElement
+     * @polymer
+     */
+    class InputSubmit extends Polymer.Element {
+      static get is() { return 'input-submit'; }
+      static get properties() {
+        return {
+          filmValue: {
+            type: String
+          }
+        };
+      }
+
+      _click(){
+        this.dispatchEvent(new CustomEvent('filmEvent', {bubbles: true, composed: true,detail: {filmValue: this.filmValue}}));
+      }
+    }
+
+    window.customElements.define(InputSubmit.is, InputSubmit);
+  </script>
+</dom-module>
